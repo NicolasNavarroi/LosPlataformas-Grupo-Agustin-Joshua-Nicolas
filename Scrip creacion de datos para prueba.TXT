@@ -1,0 +1,44 @@
+
+-- 1. Insertar tipo de usuario
+INSERT INTO Tipo_usuario (Tipo_usuario, Descripcion)
+VALUES ('Cliente', 'Usuario común de la tienda');
+
+-- 2. Insertar usuario
+INSERT INTO Usuario (Username, Nombre_apellido, Clave, Edad, Email, Direccion, Telefono, Fecha_registro, id_tipo_usuario)
+VALUES ('jdoe', 'John Doe', '1234', 30, 'jdoe@example.com', '123 Calle Falsa', '123456789', NOW(), 1);
+
+-- 3. Insertar tarjeta de crédito
+INSERT INTO Tarjeta_credito (Numero_tarjeta, Nombre_titular, Fecha_exp, cvv, Usuario_idUsuario)
+VALUES ('1234123412341234', 'John Doe', '2026-12-31', 123, 3);
+
+-- 4. Insertar categoría
+INSERT INTO categoria (nombre, descripcion)
+VALUES ('Electrónica', 'Dispositivos y gadgets');
+
+-- 5. Insertar marca
+INSERT INTO marca (nombre, descripcion, logo)
+VALUES ('TechBrand', 'Marca tecnológica', 'techbrand.png');
+
+-- 6. Insertar producto
+INSERT INTO Producto (Codigo_producto, nombre, Descripcion, id_categoria, id_marca, Precio, Stock, Imagen, Fecha_ingreso)
+VALUES ('P001', 'Smartphone X', 'Un smartphone avanzado', 1, 1, 499.99, 100, 'smartphone.png', NOW());
+
+-- 7. Insertar sucursal
+INSERT INTO sucursal (nombre, direccion, telefono, email, horario)
+VALUES ('Sucursal Central', 'Av. Principal 123', '987654321', 'sucursal@tienda.com', '09:00 - 18:00');
+
+-- 8. Insertar carrito de compra
+INSERT INTO Carrito_compra (id_usuario, Fecha_creacion, Estado)
+VALUES (3, NOW(), 'Abierto');
+
+-- 9. Insertar detalle de carrito
+INSERT INTO Detalle_carrito (id_Carrito, id_producto, Cantidad, Precio_unitario)
+VALUES (1, 1, 1, 499.99);
+
+-- 10. Insertar despacho
+INSERT INTO DESPACHO (horario, tipo_de_entrega, Codigo_venta)
+VALUES ('15:00:00', 1, 1001);
+
+-- 11. Insertar venta
+INSERT INTO VENTA (id_producto, precio_total, fecha_compra, codigo_boleta, nombre_sucursal, idDetalle_carrito, id_despacho)
+VALUES (1, 499.99, CURDATE(), 2025001, 'Sucursal Central', 2, 1);

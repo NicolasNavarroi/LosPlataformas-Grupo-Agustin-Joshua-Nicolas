@@ -1,0 +1,6 @@
+DB_HOST=localhost
+DB_USER=administrador
+DB_PASSWORD=nac25
+DB_NAME=tienda
+DB_PORT=3306
+PORT=3000    

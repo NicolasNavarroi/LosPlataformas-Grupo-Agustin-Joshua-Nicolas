@@ -1,0 +1,208 @@
+-- -----------------------------------------------------
+-- Schema tienda
+-- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `tienda`;
+CREATE SCHEMA IF NOT EXISTS `tienda` DEFAULT CHARACTER SET utf8;
+USE `tienda`;
+
+-- -----------------------------------------------------
+-- Table `Tipo_usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Tipo_usuario` (
+  `id_Tipo_usuario` INT NOT NULL AUTO_INCREMENT,
+  `Tipo_usuario` VARCHAR(256) NOT NULL,
+  `Descripcion` VARCHAR(256),
+  PRIMARY KEY (`id_Tipo_usuario`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Usuario` (
+  `idUsuario` INT NOT NULL AUTO_INCREMENT,
+  `Username` VARCHAR(256) NOT NULL,
+  `Nombre_apellido` VARCHAR(256) NOT NULL,
+  `Clave` VARCHAR(45) NOT NULL,
+  `Edad` INT NOT NULL,
+  `Email` VARCHAR(256) NOT NULL,
+  `Direccion` VARCHAR(256) NOT NULL,
+  `Telefono` VARCHAR(256) NOT NULL,
+  `Fecha_registro` DATETIME NOT NULL,
+  `id_tipo_usuario` INT NOT NULL,
+  PRIMARY KEY (`idUsuario`),
+  FOREIGN KEY (`id_tipo_usuario`) REFERENCES `Tipo_usuario` (`id_Tipo_usuario`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Tarjeta_credito`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Tarjeta_credito` (
+  `id_tarjeta` INT NOT NULL AUTO_INCREMENT,
+  `Numero_tarjeta` VARCHAR(256) NOT NULL,
+  `Nombre_titular` VARCHAR(256) NOT NULL,
+  `Fecha_exp` DATE NOT NULL,
+  `cvv` INT NOT NULL,
+  `Usuario_idUsuario` INT NOT NULL,
+  PRIMARY KEY (`id_tarjeta`),
+  FOREIGN KEY (`Usuario_idUsuario`) REFERENCES `Usuario` (`idUsuario`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Carrito_compra`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Carrito_compra` (
+  `id_Carrito` INT NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT NOT NULL,
+  `Fecha_creacion` DATETIME NOT NULL,
+  `Estado` VARCHAR(256) NOT NULL,
+  PRIMARY KEY (`id_Carrito`),
+  FOREIGN KEY (`id_usuario`) REFERENCES `Usuario` (`idUsuario`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Detalle_carrito`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Detalle_carrito` (
+  `idDetalle_carrito` INT NOT NULL AUTO_INCREMENT,
+  `id_Carrito` INT NOT NULL,
+  `id_producto` INT NOT NULL,
+  `Cantidad` INT NOT NULL,
+  `Precio_unitario` DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (`idDetalle_carrito`),
+  FOREIGN KEY (`id_Carrito`) REFERENCES `Carrito_compra` (`id_Carrito`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `categoria`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `categoria` (
+  `id_categoria` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `descripcion` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_categoria`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `marca`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `marca` (
+  `id_marca` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `descripcion` VARCHAR(45) NOT NULL,
+  `logo` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_marca`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Producto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Producto` (
+  `idProducto` INT NOT NULL AUTO_INCREMENT,
+  `Codigo_producto` VARCHAR(256) NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `Descripcion` TEXT NOT NULL,
+  `id_categoria` INT NOT NULL,
+  `id_marca` INT NOT NULL,
+  `Precio` DECIMAL(10,2) NOT NULL,
+  `Stock` INT NOT NULL,
+  `Imagen` VARCHAR(256) NOT NULL,
+  `Fecha_ingreso` DATETIME NOT NULL,
+  PRIMARY KEY (`idProducto`),
+  FOREIGN KEY (`id_categoria`) REFERENCES `categoria` (`id_categoria`),
+  FOREIGN KEY (`id_marca`) REFERENCES `marca` (`id_marca`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `inventario_sucursal`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `inventario_sucursal` (
+  `id_sucursal` INT NOT NULL,
+  `id_producto` INT NOT NULL,
+  `stock` INT NOT NULL,
+  `ubicacion` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_sucursal`, `id_producto`),
+  FOREIGN KEY (`id_producto`) REFERENCES `Producto` (`idProducto`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `sucursal`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `sucursal` (
+  `id_sucursal` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `direccion` VARCHAR(45) NOT NULL,
+  `telefono` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `horario` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_sucursal`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `BODEGA`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `BODEGA` (
+  `id_bodega` INT NOT NULL AUTO_INCREMENT,
+  `id_sucursal` INT NOT NULL,
+  `nombre_bodega` VARCHAR(45) NOT NULL,
+  `direccion_bodega` VARCHAR(45),
+  `telefono_bodega` INT,
+  PRIMARY KEY (`id_bodega`),
+  FOREIGN KEY (`id_sucursal`) REFERENCES `sucursal` (`id_sucursal`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `Promocion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `Promocion` (
+  `id_promocion` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NOT NULL,
+  `descripcion` TEXT NOT NULL,
+  `descuento` DECIMAL(5,2) NOT NULL,
+  `fecha_inicio` DATETIME NOT NULL,
+  `fecha_fin` DATETIME NOT NULL,
+  `codigo_promocion` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id_promocion`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `historial_precio`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `historial_precio` (
+  `id_historial` INT NOT NULL AUTO_INCREMENT,
+  `id_producto` INT NOT NULL,
+  `fecha` DATETIME NOT NULL,
+  `valor` DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (`id_historial`),
+  FOREIGN KEY (`id_producto`) REFERENCES `Producto` (`idProducto`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `DESPACHO`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `DESPACHO` (
+  `id_despacho` INT NOT NULL AUTO_INCREMENT,
+  `horario` TIME NOT NULL,
+  `tipo_de_entrega` TINYINT NOT NULL,
+  `Codigo_venta` INT NOT NULL,
+  PRIMARY KEY (`id_despacho`)
+) ENGINE=InnoDB;
+
+-- -----------------------------------------------------
+-- Table `VENTA`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `VENTA` (
+  `id_venta` INT NOT NULL AUTO_INCREMENT,
+  `id_producto` INT NOT NULL,
+  `precio_total` DECIMAL(10,2) NOT NULL,
+  `fecha_compra` DATE NOT NULL,
+  `codigo_boleta` INT NOT NULL,
+  `nombre_sucursal` VARCHAR(45) NOT NULL,
+  `idDetalle_carrito` INT NOT NULL,
+  `id_despacho` INT NOT NULL,
+  PRIMARY KEY (`id_venta`),
+  FOREIGN KEY (`id_producto`) REFERENCES `Producto` (`idProducto`),
+  FOREIGN KEY (`idDetalle_carrito`) REFERENCES `Detalle_carrito` (`idDetalle_carrito`),
+  FOREIGN KEY (`id_despacho`) REFERENCES `DESPACHO` (`id_despacho`)
+) ENGINE=InnoDB;
+
+
